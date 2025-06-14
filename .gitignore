@@ -123,4 +123,7 @@ dmypy.json
 .pyre/
 
 # Custom: prd folder
-prd/ 
+prd/
+
+# Request output folder
+request output/ 
