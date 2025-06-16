@@ -99,22 +99,22 @@ PATH_DISTURBANCE_MAX_S = 3 * 60
 # 为增加真实性，我们使用以15秒为中心的指数分布
 SECURITY_CHECK_TIME_MEAN_S = 15
 
-# request.md: "安检失败率：5%（补充，随机触发，需重试）"
-SECURITY_FAILURE_RATE = 0.05
+# request.md: "安检失败率：2%（补充，随机触发，需重试）"
+SECURITY_FAILURE_RATE = 0.02
 
-# request.md: "通道故障率：1%（补充，临时故障 1-5 分钟，均匀分布）"
+# request.md: "通道故障率：0.1%（补充，临时故障 2-10 分钟，均匀分布）"
 # 注意：此处的故障率定义为"每个观众通过时，通道发生故障的概率"
-LANE_FAILURE_PROB_PER_PERSON = 0.01
-LANE_FAILURE_DURATION_MIN_S = 1 * 60
-LANE_FAILURE_DURATION_MAX_S = 5 * 60
+LANE_FAILURE_PROB_PER_PERSON = 0.001
+LANE_FAILURE_DURATION_MIN_S = 2 * 60
+LANE_FAILURE_DURATION_MAX_S = 10 * 60
 
 # --- 下行方式选择 ---
 # request.md: "初始概率：楼梯 60%，电梯 40%"
 DESCEND_INITIAL_PROBS = {"stairs": 0.6, "escalator": 0.4}
 
-# request.md: "动态调整：电梯队列 > 50 人 时，楼梯概率升至 50%"
+# request.md: "动态调整：电梯队列 > 50 人 时，楼梯概率升至 70%"
 ESCALATOR_QUEUE_THRESHOLD_FOR_ADJUST = 50
-DESCEND_ADJUSTED_PROBS = {"stairs": 0.5, "escalator": 0.5}
+DESCEND_ADJUSTED_PROBS = {"stairs": 0.7, "escalator": 0.3}
 
 # --- 通行能力 ---
 # request.md: "楼梯流通率：40 人/分钟/米（宽 4 米时 160 人/分钟）"
