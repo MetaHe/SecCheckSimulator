@@ -35,17 +35,17 @@ PATH_LENGTH_MAX_M = 500
 # --- 安检设施 ---
 # request.md: "安检大棚：南北各 1 组，共 12 条通道"
 NUM_SECURITY_TENTS = 2  # 南北两个大棚
-LANES_PER_TENT = 6
+LANES_PER_TENT = 15  # 修改：每个大棚15条通道（原6条）
 TOTAL_SECURITY_LANES = NUM_SECURITY_TENTS * LANES_PER_TENT
 
 # --- F口结构 ---
 # request.md: "内侧下行楼梯：75 级（5 段×15 级），宽 4 米"
 STAIRS_WIDTH_M = 4
 # request.md: "手扶电梯通行能力：20 人/分钟"
-ESCALATOR_CAPACITY_PER_MIN = 20
+ESCALATOR_CAPACITY_PER_MIN = 40  # 修改：提升至40人/分钟
 ESCALATOR_CAPACITY_PER_SEC = ESCALATOR_CAPACITY_PER_MIN / 60
 # request.md: "队列容量：80 人（补充，假设值）"
-ESCALATOR_QUEUE_CAPACITY = 80
+ESCALATOR_QUEUE_CAPACITY = 160  # 修改：提升至160人容量
 
 # ==============================================================================
 # 3. 模块1：交通方式选择 (Transportation Module)
@@ -97,7 +97,7 @@ PATH_DISTURBANCE_MAX_S = 3 * 60
 # --- 安检过程 ---
 # request.md: "单次安检时间：15 秒（补充，均值）"
 # 为增加真实性，我们使用以15秒为中心的指数分布
-SECURITY_CHECK_TIME_MEAN_S = 15
+SECURITY_CHECK_TIME_MEAN_S = 12  # 修改：优化至12秒
 
 # request.md: "安检失败率：2%（补充，随机触发，需重试）"
 SECURITY_FAILURE_RATE = 0.02
