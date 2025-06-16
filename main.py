@@ -50,7 +50,7 @@ def create_summary(spectator_df, system_df):
         overall_utilization = ((system_df['北侧安检区使用中通道数'] + system_df['南侧安检区使用中通道数']).mean() / cfg.TOTAL_SECURITY_LANES) * 100
         
         # 电梯利用率
-        elevator_utilization = (system_df['电梯使用中人数'].mean() / cfg.ESCALATOR_QUEUE_CAPACITY) * 100
+        elevator_utilization = (system_df['电梯使用中人数'].mean() / cfg.ESCALATOR_PHYSICAL_CAPACITY) * 100
     else:
         north_utilization = south_utilization = overall_utilization = elevator_utilization = 0
 

@@ -41,10 +41,12 @@ TOTAL_SECURITY_LANES = NUM_SECURITY_TENTS * LANES_PER_TENT
 # --- F口结构 ---
 # request.md: "内侧下行楼梯：75 级（5 段×15 级），宽 4 米"
 STAIRS_WIDTH_M = 4
-# request.md: "手扶电梯通行能力：20 人/分钟"
+# request.md: "手扶电梯通行能力：40 人/分钟"
 ESCALATOR_CAPACITY_PER_MIN = 40  # 修改：提升至40人/分钟
 ESCALATOR_CAPACITY_PER_SEC = ESCALATOR_CAPACITY_PER_MIN / 60
-# request.md: "队列容量：80 人（补充，假设值）"
+# 电梯物理容量：同时能站多少人（一般扶梯单侧容纳20-30人）
+ESCALATOR_PHYSICAL_CAPACITY = 25  # 修改：电梯同时容纳人数
+# 电梯队列等候区容量
 ESCALATOR_QUEUE_CAPACITY = 160  # 修改：提升至160人容量
 
 # ==============================================================================

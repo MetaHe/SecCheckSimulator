@@ -56,7 +56,7 @@ class Simulation:
         self.north_lanes = self.security_lanes[:cfg.LANES_PER_TENT]
         self.south_lanes = self.security_lanes[cfg.LANES_PER_TENT:]
         
-        self.escalator = simpy.Resource(self.env, capacity=cfg.ESCALATOR_QUEUE_CAPACITY)
+        self.escalator = simpy.Resource(self.env, capacity=cfg.ESCALATOR_PHYSICAL_CAPACITY)
         self.stairs = simpy.Resource(self.env, capacity=9999) # 楼梯视为无限容量
 
         # 统计数据
