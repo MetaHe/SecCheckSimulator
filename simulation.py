@@ -21,6 +21,7 @@ class SpectatorStats:
         self.security_process_time = 0
         self.descend_queue_wait_time = 0
         self.descend_process_time = 0
+        self.descend_method = ""  # 记录下行方式："escalator" 或 "stairs"
         self.finish_time = -1
         self.is_finished = False
 
@@ -37,6 +38,7 @@ class SpectatorStats:
             "安检处理时长": self.security_process_time,
             "下楼排队时长": self.descend_queue_wait_time,
             "下楼过程时长": self.descend_process_time,
+            "下行方式": self.descend_method,
             "完成进站时间": self.finish_time,
             "是否在规定时间内完成": self.is_finished,
             "总耗时": self.total_time()
@@ -143,6 +145,7 @@ class Simulation:
 
         # 4.1 走扶梯
         if self.random_state.rand() < use_escalator_prob:
+            stats.descend_method = "escalator"
             with self.escalator.request() as request:
                 yield request
                 stats.descend_queue_wait_time = self.env.now - descend_queue_start_time
@@ -151,6 +154,7 @@ class Simulation:
                 stats.descend_process_time = self.env.now - descend_process_start_time
         # 4.2 走楼梯
         else:
+            stats.descend_method = "stairs"
             with self.stairs.request() as request:
                 yield request
                 stats.descend_queue_wait_time = self.env.now - descend_queue_start_time
@@ -187,7 +191,9 @@ class Simulation:
                 "北侧安检区使用中通道数": sum(r.count for r in self.north_lanes),
                 "南侧安检区使用中通道数": sum(r.count for r in self.south_lanes),
                 "电梯队列人数": len(self.escalator.queue),
-                "电梯使用中人数": self.escalator.count
+                "电梯使用中人数": self.escalator.count,
+                "楼梯使用中人数": self.stairs.count,
+                "楼梯密度(人/米)": self.stairs.count / cfg.STAIRS_WIDTH_M
             }
             self.system_state_log.append(state)
             yield self.env.timeout(cfg.MONITOR_INTERVAL_S)
