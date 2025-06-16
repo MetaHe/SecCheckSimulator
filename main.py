@@ -228,7 +228,14 @@ def main():
 
     print(f"仿真完成，结果已保存至 '{cfg.OUTPUT_FILE_NAME}'")
     print("\n仿真结果汇总:")
-    print(summary_df)
+    
+    # 设置pandas显示选项，避免重复打印
+    pd.set_option('display.max_rows', None)
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.width', None)
+    pd.set_option('display.max_colwidth', None)
+    
+    print(summary_df.to_string(index=False))
 
 
 if __name__ == "__main__":
