@@ -99,7 +99,7 @@ PATH_DISTURBANCE_MAX_S = 3 * 60
 # --- 安检过程 ---
 # request.md: "单次安检时间：15 秒（补充，均值）"
 # 为增加真实性，我们使用以15秒为中心的指数分布
-SECURITY_CHECK_TIME_MEAN_S = 12  # 修改：优化至12秒
+SECURITY_CHECK_TIME_MEAN_S = 10  # 修改：优化至12秒
 
 # request.md: "安检失败率：2%（补充，随机触发，需重试）"
 SECURITY_FAILURE_RATE = 0.02
