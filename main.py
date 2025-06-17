@@ -60,7 +60,12 @@ def create_summary(spectator_df, system_df):
     if total_finished > 0:
         # 平均各环节耗时
         avg_transport_delay = finished_spectators['交通延迟'].mean() / 60  # 分钟
-        avg_walk_time = finished_spectators['步行时长'].mean() / 60
+        # 步行时间分解
+        avg_walk_ideal = finished_spectators['理想步行时长'].mean() / 60
+        avg_walk_congestion_delay = finished_spectators['拥堵延迟'].mean() / 60
+        avg_walk_random_delay = finished_spectators['随机扰动延迟'].mean() / 60
+        avg_walk_total = avg_walk_ideal + avg_walk_congestion_delay + avg_walk_random_delay
+
         avg_security_queue = finished_spectators['安检排队时长'].mean() / 60
         avg_security_process = finished_spectators['安检处理时长'].mean() / 60
         avg_descend_queue = finished_spectators['下楼排队时长'].mean() / 60
@@ -70,7 +75,8 @@ def create_summary(spectator_df, system_df):
         std_security_queue = finished_spectators['安检排队时长'].std() / 60
         std_descend_queue = finished_spectators['下楼排队时长'].std() / 60
     else:
-        avg_transport_delay = avg_walk_time = avg_security_queue = avg_security_process = 0
+        avg_transport_delay = avg_walk_total = avg_security_queue = avg_security_process = 0
+        avg_walk_congestion_delay = avg_walk_random_delay = 0
         avg_descend_queue = avg_descend_process = std_security_queue = std_descend_queue = 0
 
     # ============================================================================
@@ -130,7 +136,34 @@ def create_summary(spectator_df, system_df):
     }
     
     # ============================================================================
-    # 5. 关键节点热力图数据 - 楼梯密度分析
+    # 5. 公园路径指标 (新增)
+    # ============================================================================
+    path_data = {
+        "指标类别": [],
+        "指标名称": [],
+        "数值": []
+    }
+    if not system_df.empty:
+        for path_name in cfg.PATHS.keys():
+            pop_col = f"{path_name} 人数"
+            den_col = f"{path_name} 密度(人/m^2)"
+            if pop_col in system_df.columns and den_col in system_df.columns:
+                path_data["指标类别"].extend(["公园路径指标"] * 4)
+                path_data["指标名称"].extend([
+                    f"{path_name} 最大人数 (人)",
+                    f"{path_name} 平均人数 (人)",
+                    f"{path_name} 最大密度 (人/m²)",
+                    f"{path_name} 平均密度 (人/m²)"
+                ])
+                path_data["数值"].extend([
+                    f"{system_df[pop_col].max():.0f}",
+                    f"{system_df[pop_col].mean():.1f}",
+                    f"{system_df[den_col].max():.2f}",
+                    f"{system_df[den_col].mean():.2f}"
+                ])
+
+    # ============================================================================
+    # 6. 关键节点热力图数据 - 楼梯密度分析
     # ============================================================================
     if not system_df.empty:
         max_stairs_density = system_df['楼梯密度(人/米)'].max()
@@ -141,7 +174,7 @@ def create_summary(spectator_df, system_df):
         max_stairs_density = avg_stairs_density = max_stairs_usage = avg_stairs_usage = 0
 
     # ============================================================================
-    # 6. 下行方式选择分析
+    # 7. 下行方式选择分析
     # ============================================================================
     if total_finished > 0:
         escalator_users = len(finished_spectators[finished_spectators['下行方式'] == 'escalator'])
@@ -153,10 +186,12 @@ def create_summary(spectator_df, system_df):
 
     # 瓶颈分析
     bottleneck_data = {
-        "指标类别": ["瓶颈分析"] * 16,
+        "指标类别": ["瓶颈分析"] * 18,
         "指标名称": [
             "交通延迟平均时间 (分钟)",
-            "园内步行平均时间 (分钟)",
+            "园内总步行平均时间 (分钟)",
+            "  - 步行拥堵平均延迟 (分钟)",
+            "  - 步行随机平均扰动 (分钟)",
             "安检排队平均时间 (分钟)",
             "安检处理平均时间 (分钟)",
             "下楼排队平均时间 (分钟)",
@@ -174,7 +209,9 @@ def create_summary(spectator_df, system_df):
         ],
         "数值": [
             f"{avg_transport_delay:.2f}",
-            f"{avg_walk_time:.2f}",
+            f"{avg_walk_total:.2f}",
+            f"{avg_walk_congestion_delay:.2f}",
+            f"{avg_walk_random_delay:.2f}",
             f"{avg_security_queue:.2f}",
             f"{avg_security_process:.2f}",
             f"{avg_descend_queue:.2f}",
@@ -195,11 +232,14 @@ def create_summary(spectator_df, system_df):
     # 合并所有数据
     all_data = {
         "指标类别": (efficiency_data["指标类别"] + queue_data["指标类别"] + 
-                     utilization_data["指标类别"] + bottleneck_data["指标类别"]),
+                     utilization_data["指标类别"] + path_data["指标类别"] + 
+                     bottleneck_data["指标类别"]),
         "指标名称": (efficiency_data["指标名称"] + queue_data["指标名称"] + 
-                     utilization_data["指标名称"] + bottleneck_data["指标名称"]),
+                     utilization_data["指标名称"] + path_data["指标名称"] +
+                     bottleneck_data["指标名称"]),
         "数值": (efficiency_data["数值"] + queue_data["数值"] + 
-                 utilization_data["数值"] + bottleneck_data["数值"])
+                 utilization_data["数值"] + path_data["数值"] +
+                 bottleneck_data["数值"])
     }
     
     return pd.DataFrame(all_data)
